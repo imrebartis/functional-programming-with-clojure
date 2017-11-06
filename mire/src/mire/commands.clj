@@ -1,11 +1,35 @@
 (ns mire.commands
-  (:use [clojure.contrib str-utils]))
+  (:use [mire rooms util])
+  (:use [clojure.contrib str-utils seq-utils]))
 
-(defn current-time []
-     (str "It is now "(java.util.Date.)))
+;; Command functions
 
-(def commands {"time" current-time,
-               "look" (fn [] "You see an empty room, waiting to be filled.")})
+(defn look "Get a description of the surrounding environs and its contents."
+  []
+  (str (:desc *current-room*)
+       "\nExits: " (keys (:exits *current-room*))
+       ".\n"))
+
+(defn move
+  "\"♬ We gotta get out of this place... ♪\" Give a direction."
+  [direction]
+  (let [target-name ((:exits *current-room*) (keyword direction))
+        target (rooms target-name)]
+    (if target
+      (do (set-current-room target)
+          (look))
+      "You can't go that way.")))
+
+;; Command data
+
+(def commands {"move" move,
+               "north" (fn [] (move :north)),
+               "south" (fn [] (move :south)),
+               "east" (fn [] (move :east)),
+               "west" (fn [] (move :west)),
+               "look" look})
+
+;; Command handling
 
 (defn execute
   "Execute a command that is passed to us."
