@@ -1,16 +1,18 @@
 #!/usr/bin/env clj
 
 (ns mire
-  (:use [mire commands])
+  (:use [mire commands rooms])
   (:use [clojure.contrib server-socket duck-streams]))
 
-(def port (* 3 1111))
+(def port 3333)
 (def prompt "> ")
 
-(defn mire-handle-client [in out]
+(defn- mire-handle-client [in out]
   (binding [*in* (reader in)
-            *out* (writer out)]
-     (print prompt) (flush)
+            *out* (writer out)
+            *current-room* (rooms :start)]
+    (println (look))
+    (print prompt) (flush)
     (loop [input (read-line)]
       (println (execute input))
       (print prompt)
