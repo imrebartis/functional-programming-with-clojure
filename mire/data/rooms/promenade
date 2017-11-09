@@ -1,2 +1,4 @@
+
 {:desc "The promenade stretches out before you."
- :exits {:west :hallway}}
+ :exits {:west :hallway}
+ :items #{:bunny :turtle}}
