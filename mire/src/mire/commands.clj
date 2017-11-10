@@ -1,5 +1,5 @@
 (ns mire.commands
-  (:use [mire rooms player util])
+  (:use [mire rooms util player])
   (:use [clojure.contrib str-utils seq-utils]))
 
 ;; Command functions
@@ -54,6 +54,16 @@
   (str "You are carrying:\n"
        (str-join "\n"  @*inventory*)))
 
+(defn detect
+  "If you have the detector, you can see which room an item is in."
+  [item]
+  (if (@*inventory* :detector)
+    (if-let [room (first (filter #((:items %) (keyword item))
+                                 (vals rooms)))]
+      (str item " is in " (:name room))
+      (str item " is not in any room."))
+    "You need to be carrying the detector for that."))
+
 ;; Command data
 
 (def commands {"move" move,
@@ -64,6 +74,7 @@
                "grab" grab
                "discard" discard
                "inventory" inventory
+               "detect" detect
                "look" look})
 
 ;; Command handling
